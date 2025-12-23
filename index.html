@@ -14,8 +14,139 @@
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- Critical CSS for instant orb rendering -->
+    <style>
+      /* Instant background - no flash */
+      body {
+        background: linear-gradient(-45deg, #0a0e27, #1a1f3a, #0f172a, #1e293b);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+
+      /* Professional orb container - renders instantly */
+      .orb-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 1;
+        overflow: hidden;
+      }
+
+      /* Instant orb styles - no React needed */
+      .orb {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+        filter: blur(1.5px);
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        will-change: transform, opacity;
+      }
+
+      /* Color variants for visual variety */
+      .orb-white {
+        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(200, 220, 255, 0.3), transparent);
+      }
+
+      .orb-cyan {
+        background: radial-gradient(circle at 30% 30%, rgba(100, 255, 255, 0.8), rgba(0, 200, 255, 0.3), transparent);
+      }
+
+      .orb-blue {
+        background: radial-gradient(circle at 30% 30%, rgba(150, 180, 255, 0.85), rgba(100, 150, 255, 0.3), transparent);
+      }
+
+      .orb-purple {
+        background: radial-gradient(circle at 30% 30%, rgba(200, 160, 255, 0.8), rgba(150, 100, 255, 0.3), transparent);
+      }
+
+      /* Multiple animation variants for variety */
+      @keyframes float1 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+        25% { transform: translate(40px, -30px) scale(1.1); opacity: 0.6; }
+        50% { transform: translate(-25px, 40px) scale(0.9); opacity: 0.5; }
+        75% { transform: translate(30px, 20px) scale(1.05); opacity: 0.55; }
+      }
+
+      @keyframes float2 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.35; }
+        33% { transform: translate(-35px, 35px) scale(1.08); opacity: 0.55; }
+        66% { transform: translate(35px, -20px) scale(0.92); opacity: 0.45; }
+      }
+
+      @keyframes float3 {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.38; }
+        20% { transform: translate(25px, 30px) scale(1.12); opacity: 0.58; }
+        40% { transform: translate(-30px, -25px) scale(0.88); opacity: 0.42; }
+        60% { transform: translate(35px, 15px) scale(1.05); opacity: 0.52; }
+        80% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.48; }
+      }
+
+      @keyframes glow {
+        0%, 100% {
+          box-shadow: 0 0 15px rgba(255, 255, 255, 0.3),
+                      0 0 30px rgba(200, 220, 255, 0.2),
+                      0 0 45px rgba(150, 180, 255, 0.1);
+        }
+        50% {
+          box-shadow: 0 0 25px rgba(255, 255, 255, 0.5),
+                      0 0 50px rgba(200, 220, 255, 0.3),
+                      0 0 75px rgba(150, 180, 255, 0.2);
+        }
+      }
+    </style>
   </head>
   <body>
+    <!-- Orbs render instantly with pure CSS - no JS delay -->
+    <div class="orb-canvas" id="orb-container"></div>
+
+    <script>
+      // Generate orbs immediately - runs before React loads
+      (function() {
+        const container = document.getElementById('orb-container');
+        const orbCount = 35;
+        const animations = ['float1', 'float2', 'float3'];
+        const colorClasses = ['orb-white', 'orb-white', 'orb-white', 'orb-cyan', 'orb-blue', 'orb-purple'];
+
+        for (let i = 0; i < orbCount; i++) {
+          const orb = document.createElement('div');
+          const colorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+          orb.className = `orb ${colorClass}`;
+
+          const size = Math.random() * 10 + 6; // 6-16px
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          const duration = Math.random() * 10 + 15; // 15-25s
+          const delay = Math.random() * -20; // stagger start
+          const glowDuration = Math.random() * 4 + 6; // 6-10s
+          const animType = animations[Math.floor(Math.random() * animations.length)];
+
+          orb.style.cssText = `
+            width: ${size}px;
+            height: ${size}px;
+            left: ${left}%;
+            top: ${top}%;
+            animation: ${animType} ${duration}s ease-in-out infinite ${delay}s,
+                       glow ${glowDuration}s ease-in-out infinite ${delay * 0.5}s;
+          `;
+
+          container.appendChild(orb);
+        }
+      })();
+    </script>
+
     <div id="root"></div>
 
     <!-- All JavaScript in one file to avoid CORS issues with file:// protocol -->
@@ -43,9 +174,6 @@
         scam: 'Мошенничество',
         other: 'Другое'
       };
-
-      // Orb Configuration
-      const ORB_COUNT = 30;
 
       // ==================== SERVICES ====================
       // Discord Service - handles sending messages to Discord webhooks
@@ -198,44 +326,8 @@
       });
 
       // ==================== COMPONENTS ====================
-      // OrbEffect Component - Generates floating orb animations
-      // Fixed: Orbs now maintain stable positions during input
-
-      const OrbEffect = () => {
-        const { useMemo } = React;
-
-        // Generate orbs ONCE using useMemo to prevent regeneration on every render
-        const orbs = useMemo(() => {
-          return Array.from({ length: ORB_COUNT }, (_, i) => ({
-            id: i,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDuration: `${Math.random() * 2 + 3}s`,
-            glowDuration: `${Math.random() * 1 + 1.5}s`,
-            size: `${Math.random() * 15 + 10}px`,
-            animationDelay: `${Math.random() * 2}s`
-          }));
-        }, []); // Empty dependency array ensures this only runs once
-
-        return (
-          <>
-            {orbs.map(orb => (
-              <div
-                key={orb.id}
-                className="orb"
-                style={{
-                  left: orb.left,
-                  top: orb.top,
-                  width: orb.size,
-                  height: orb.size,
-                  animationDuration: `${orb.animationDuration}, ${orb.glowDuration}`,
-                  animationDelay: orb.animationDelay
-                }}
-              />
-            ))}
-          </>
-        );
-      };
+      // Orbs are now rendered instantly with vanilla JS before React loads
+      // No React component needed - better performance!
 
       // Main App Component
       const ServerForms = () => {
@@ -290,8 +382,7 @@
 
         return (
           <div className={`min-h-screen ${classes.background} p-6 theme-transition`}>
-            <OrbEffect />
-            <div className="max-w-2xl mx-auto">
+            <div className="max-w-2xl mx-auto relative z-10">
               <div className="text-center mb-6 animate-fade-in">
                 <h1 className={`text-3xl font-bold ${
                   theme === 'dark' ? 'text-cyan-300' : 'text-blue-600'
