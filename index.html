@@ -6,36 +6,26 @@
     <title>Unturned Server - Формы</title>
     <meta name="description" content="Отправьте идею или жалобу для сервера Unturned" />
 
+    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-
-      body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-          'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-          sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-    </style>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
     <div id="root"></div>
 
+    <!-- All JavaScript in one file to avoid CORS issues with file:// protocol -->
     <script type="text/babel">
-      const { useState } = React;
-
+      // ==================== CONFIG ====================
+      // Discord Webhook URLs
       const IDEA_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1452744051538395166/DycJdRWdIhQXEhKR-1eIPo7lP-mWHzJJVFSBLO3eAOlhzIX6gb7j7i9ALvLkq_wcpCnY';
       const COMPLAINT_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1452744159008915558/PBRmrfbqgHi_N7NqAhknpax5KPyN-AkMG9NTVUfk6FgP1KHsKJUq2_YzFRhTlQx8mOEl';
 
+      // Category Labels
       const CATEGORY_LABELS = {
         gameplay: 'Игровой процесс',
         events: 'События',
@@ -44,6 +34,7 @@
         other: 'Другое'
       };
 
+      // Reason Labels
       const REASON_LABELS = {
         grief: 'Гриферство',
         abuse: 'Оскорбления',
@@ -53,11 +44,22 @@
         other: 'Другое'
       };
 
-      async function sendToDiscord(webhookUrl, embedData) {
+      // Orb Configuration
+      const ORB_COUNT = 30;
+
+      // ==================== SERVICES ====================
+      // Discord Service - handles sending messages to Discord webhooks
+
+      async function sendToDiscord(webhookUrl, embedData, shouldMention = true) {
+        const payload = {
+          content: shouldMention ? '<@YOUR_DISCORD_USER_ID>' : '',
+          embeds: [embedData]
+        };
+
         const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ embeds: [embedData] })
+          body: JSON.stringify(payload)
         });
 
         if (!response.ok) {
@@ -65,9 +67,183 @@
         }
       }
 
-      function ServerForms() {
+      // Idea submission handler
+      async function submitIdea(ideaForm) {
+        if (!ideaForm.nickname || !ideaForm.ideaTitle || !ideaForm.description || !ideaForm.category) {
+          throw new Error('Пожалуйста, заполните все поля');
+        }
+
+        if (IDEA_WEBHOOK_URL === 'YOUR_IDEA_WEBHOOK_URL_HERE') {
+          throw new Error('Ошибка: Webhook URL не настроен. Пожалуйста, добавьте ваш Discord Webhook URL в код.');
+        }
+
+        const embed = {
+          title: '💡 Новая идея',
+          description: '**Получена новая идея для сервера**',
+          color: 16766720,
+          fields: [
+            {
+              name: '👤 Автор',
+              value: `\`${ideaForm.nickname}\``,
+              inline: true
+            },
+            {
+              name: '📁 Категория',
+              value: `\`${CATEGORY_LABELS[ideaForm.category]}\``,
+              inline: true
+            },
+            {
+              name: '\u200B',
+              value: '\u200B',
+              inline: true
+            },
+            {
+              name: '📌 Название',
+              value: `**${ideaForm.ideaTitle}**`,
+              inline: false
+            },
+            {
+              name: '📝 Описание',
+              value: ideaForm.description,
+              inline: false
+            }
+          ],
+          footer: {
+            text: 'Unturned Server Forms'
+          },
+          timestamp: new Date().toISOString()
+        };
+
+        await sendToDiscord(IDEA_WEBHOOK_URL, embed, true);
+      }
+
+      // Complaint submission handler
+      async function submitComplaint(complaintForm) {
+        if (!complaintForm.yourNickname || !complaintForm.targetNickname || !complaintForm.reason || !complaintForm.description) {
+          throw new Error('Пожалуйста, заполните все обязательные поля');
+        }
+
+        if (COMPLAINT_WEBHOOK_URL === 'YOUR_COMPLAINT_WEBHOOK_URL_HERE') {
+          throw new Error('Ошибка: Webhook URL не настроен. Пожалуйста, добавьте ваш Discord Webhook URL в код.');
+        }
+
+        const embed = {
+          title: '🚨 Новая жалоба',
+          description: '**Получена новая жалоба на игрока**',
+          color: 15158332,
+          fields: [
+            {
+              name: '👤 От кого',
+              value: `\`${complaintForm.yourNickname}\``,
+              inline: true
+            },
+            {
+              name: '🎯 На кого',
+              value: `\`${complaintForm.targetNickname}\``,
+              inline: true
+            },
+            {
+              name: '\u200B',
+              value: '\u200B',
+              inline: true
+            },
+            {
+              name: '⚠️ Причина',
+              value: `**${REASON_LABELS[complaintForm.reason]}**`,
+              inline: false
+            },
+            {
+              name: '📝 Описание',
+              value: complaintForm.description,
+              inline: false
+            }
+          ],
+          footer: {
+            text: 'Unturned Server Forms'
+          },
+          timestamp: new Date().toISOString()
+        };
+
+        if (complaintForm.proof) {
+          embed.fields.push({
+            name: '🔗 Доказательства',
+            value: complaintForm.proof,
+            inline: false
+          });
+        }
+
+        await sendToDiscord(COMPLAINT_WEBHOOK_URL, embed, true);
+      }
+
+      // ==================== UTILS ====================
+      // Theme utilities - handles theme-specific styling classes
+
+      const getThemeClasses = (theme) => ({
+        background: theme === 'dark' ? 'animated-gradient-dark' : 'animated-gradient-light',
+        card: theme === 'dark'
+          ? 'bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl border border-gray-700'
+          : 'bg-white shadow-xl border border-gray-200',
+        input: theme === 'dark'
+          ? 'bg-gray-700'
+          : 'bg-white border-2 border-gray-300 focus:border-blue-500',
+        text: theme === 'dark' ? 'text-white' : 'text-gray-900',
+        label: theme === 'dark' ? 'text-gray-300' : 'text-gray-800',
+        tabActive: theme === 'dark'
+          ? 'bg-gray-800 text-white'
+          : 'bg-white text-gray-900 shadow-md',
+        tabInactive: theme === 'dark'
+          ? 'bg-gray-700 text-gray-400 hover:bg-gray-650'
+          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow',
+        footer: theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
+      });
+
+      // ==================== COMPONENTS ====================
+      // OrbEffect Component - Generates floating orb animations
+      // Fixed: Orbs now maintain stable positions during input
+
+      const OrbEffect = () => {
+        const { useMemo } = React;
+
+        // Generate orbs ONCE using useMemo to prevent regeneration on every render
+        const orbs = useMemo(() => {
+          return Array.from({ length: ORB_COUNT }, (_, i) => ({
+            id: i,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animationDuration: `${Math.random() * 2 + 3}s`,
+            glowDuration: `${Math.random() * 1 + 1.5}s`,
+            size: `${Math.random() * 15 + 10}px`,
+            animationDelay: `${Math.random() * 2}s`
+          }));
+        }, []); // Empty dependency array ensures this only runs once
+
+        return (
+          <>
+            {orbs.map(orb => (
+              <div
+                key={orb.id}
+                className="orb"
+                style={{
+                  left: orb.left,
+                  top: orb.top,
+                  width: orb.size,
+                  height: orb.size,
+                  animationDuration: `${orb.animationDuration}, ${orb.glowDuration}`,
+                  animationDelay: orb.animationDelay
+                }}
+              />
+            ))}
+          </>
+        );
+      };
+
+      // Main App Component
+      const ServerForms = () => {
+        const { useState } = React;
+
         const [activeTab, setActiveTab] = useState('ideas');
         const [isSubmitting, setIsSubmitting] = useState(false);
+        const [theme, setTheme] = useState('dark');
         const [ideaForm, setIdeaForm] = useState({
           nickname: '',
           ideaTitle: '',
@@ -83,36 +259,13 @@
         });
 
         const handleIdeaSubmit = async () => {
-          if (!ideaForm.nickname || !ideaForm.ideaTitle || !ideaForm.description || !ideaForm.category) {
-            alert('Пожалуйста, заполните все поля');
-            return;
-          }
-
-          if (IDEA_WEBHOOK_URL === 'YOUR_IDEA_WEBHOOK_URL_HERE') {
-            alert('Ошибка: Webhook URL не настроен. Пожалуйста, добавьте ваш Discord Webhook URL в код.');
-            return;
-          }
-
           setIsSubmitting(true);
-
           try {
-            const embed = {
-              title: '💡 Новая идея',
-              color: 16766720,
-              fields: [
-                { name: 'Автор', value: ideaForm.nickname, inline: true },
-                { name: 'Категория', value: CATEGORY_LABELS[ideaForm.category], inline: true },
-                { name: 'Название', value: ideaForm.ideaTitle },
-                { name: 'Описание', value: ideaForm.description }
-              ],
-              timestamp: new Date().toISOString()
-            };
-
-            await sendToDiscord(IDEA_WEBHOOK_URL, embed);
+            await submitIdea(ideaForm);
             alert('Ваша идея успешно отправлена!');
             setIdeaForm({ nickname: '', ideaTitle: '', description: '', category: '' });
           } catch (error) {
-            alert('Произошла ошибка при отправке. Попробуйте позже.');
+            alert(error.message || 'Произошла ошибка при отправке. Попробуйте позже.');
             console.error('Error:', error);
           } finally {
             setIsSubmitting(false);
@@ -120,56 +273,60 @@
         };
 
         const handleComplaintSubmit = async () => {
-          if (!complaintForm.yourNickname || !complaintForm.targetNickname || !complaintForm.reason || !complaintForm.description) {
-            alert('Пожалуйста, заполните все обязательные поля');
-            return;
-          }
-
-          if (COMPLAINT_WEBHOOK_URL === 'YOUR_COMPLAINT_WEBHOOK_URL_HERE') {
-            alert('Ошибка: Webhook URL не настроен. Пожалуйста, добавьте ваш Discord Webhook URL в код.');
-            return;
-          }
-
           setIsSubmitting(true);
-
           try {
-            const embed = {
-              title: '🚨 Новая жалоба',
-              color: 5763719,
-              fields: [
-                { name: 'От кого', value: complaintForm.yourNickname, inline: true },
-                { name: 'На кого', value: complaintForm.targetNickname, inline: true },
-                { name: 'Причина', value: REASON_LABELS[complaintForm.reason] },
-                { name: 'Описание', value: complaintForm.description }
-              ],
-              timestamp: new Date().toISOString()
-            };
-
-            if (complaintForm.proof) {
-              embed.fields.push({ name: 'Доказательства', value: complaintForm.proof });
-            }
-
-            await sendToDiscord(COMPLAINT_WEBHOOK_URL, embed);
+            await submitComplaint(complaintForm);
             alert('Ваша жалоба успешно отправлена!');
             setComplaintForm({ yourNickname: '', targetNickname: '', reason: '', description: '', proof: '' });
           } catch (error) {
-            alert('Произошла ошибка при отправке. Попробуйте позже.');
+            alert(error.message || 'Произошла ошибка при отправке. Попробуйте позже.');
             console.error('Error:', error);
           } finally {
             setIsSubmitting(false);
           }
         };
 
+        const classes = getThemeClasses(theme);
+
         return (
-          <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6">
+          <div className={`min-h-screen ${classes.background} p-6 theme-transition`}>
+            <OrbEffect />
             <div className="max-w-2xl mx-auto">
-              <div className="flex gap-1 mb-6">
+              <div className="text-center mb-6 animate-fade-in">
+                <h1 className={`text-3xl font-bold ${
+                  theme === 'dark' ? 'text-cyan-300' : 'text-blue-600'
+                }`}>
+                  COBRA PEI #1 - BEZ ВЫХИ
+                </h1>
+              </div>
+
+              <div className="flex justify-end mb-4 animate-fade-in delay-100">
+                <button
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
+                    theme === 'dark' ? 'bg-gray-700 text-yellow-300' : 'bg-gray-200 text-gray-700'
+                  }`}
+                  aria-label="Переключить тему"
+                >
+                  {theme === 'dark' ? (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+
+              <div className="flex gap-1 mb-6 animate-fade-in delay-200">
                 <button
                   onClick={() => setActiveTab('ideas')}
-                  className={`flex-1 px-6 py-3 rounded-t-lg font-medium transition-all ${
+                  className={`flex-1 px-6 py-3 rounded-t-lg font-medium transition-all tab-button ${
                     activeTab === 'ideas'
-                      ? 'bg-gray-800 text-white border-b-2 border-yellow-500'
-                      : 'bg-gray-700 text-gray-400 hover:bg-gray-650'
+                      ? `${classes.tabActive} border-b-2 border-yellow-500`
+                      : classes.tabInactive
                   }`}
                 >
                   <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
@@ -177,10 +334,10 @@
                 </button>
                 <button
                   onClick={() => setActiveTab('complaints')}
-                  className={`flex-1 px-6 py-3 rounded-t-lg font-medium transition-all ${
+                  className={`flex-1 px-6 py-3 rounded-t-lg font-medium transition-all tab-button ${
                     activeTab === 'complaints'
-                      ? 'bg-gray-800 text-white border-b-2 border-green-500'
-                      : 'bg-gray-700 text-gray-400 hover:bg-gray-650'
+                      ? `${classes.tabActive} border-b-2 border-green-500`
+                      : classes.tabInactive
                   }`}
                 >
                   <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
@@ -188,39 +345,39 @@
                 </button>
               </div>
 
-              <div className="bg-gray-800 rounded-b-lg rounded-tr-lg p-8 shadow-2xl">
+              <div className={`${classes.card} rounded-b-lg rounded-tr-lg p-8 shadow-2xl theme-transition animate-fade-in-up delay-300`}>
                 {activeTab === 'ideas' && (
                   <div className="space-y-5">
-                    <h2 className="text-2xl font-bold text-white mb-6">Предложить идею</h2>
+                    <h2 className={`text-2xl font-bold ${classes.text} mb-6`}>Предложить идею</h2>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Ваш ник</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Ваш ник</label>
                       <input
                         type="text"
                         value={ideaForm.nickname}
                         onChange={(e) => setIdeaForm({ ...ideaForm, nickname: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all theme-transition`}
                         placeholder="Введите ваш игровой ник"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Название идеи</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Название идеи</label>
                       <input
                         type="text"
                         value={ideaForm.ideaTitle}
                         onChange={(e) => setIdeaForm({ ...ideaForm, ideaTitle: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all theme-transition`}
                         placeholder="Краткое название вашей идеи"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Категория</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Категория</label>
                       <select
                         value={ideaForm.category}
                         onChange={(e) => setIdeaForm({ ...ideaForm, category: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all theme-transition`}
                       >
                         <option value="">Выберите категорию</option>
                         <option value="gameplay">Игровой процесс</option>
@@ -232,11 +389,11 @@
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Описание идеи</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Описание идеи</label>
                       <textarea
                         value={ideaForm.description}
                         onChange={(e) => setIdeaForm({ ...ideaForm, description: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 h-32 resize-none"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 h-32 resize-none transition-all theme-transition`}
                         placeholder="Подробно опишите вашу идею..."
                       />
                     </div>
@@ -244,49 +401,54 @@
                     <button
                       onClick={handleIdeaSubmit}
                       disabled={isSubmitting}
-                      className={`w-full font-bold py-3 rounded-lg transition-all transform ${
+                      className={`w-full font-bold py-3 rounded-lg transition-all transform button-enhanced submit-button ${
                         isSubmitting
                           ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                          : 'bg-yellow-500 hover:bg-yellow-600 text-gray-900 hover:scale-105'
+                          : 'bg-yellow-500 hover:bg-yellow-600 text-gray-900'
                       }`}
                     >
-                      {isSubmitting ? 'Отправка...' : 'Отправить идею'}
+                      {isSubmitting ? (
+                        <>
+                          <span className="loading-spinner"></span>
+                          Отправка...
+                        </>
+                      ) : 'Отправить идею'}
                     </button>
                   </div>
                 )}
 
                 {activeTab === 'complaints' && (
                   <div className="space-y-5">
-                    <h2 className="text-2xl font-bold text-white mb-6">Подать жалобу</h2>
+                    <h2 className={`text-2xl font-bold ${classes.text} mb-6`}>Подать жалобу</h2>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Ваш ник</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Ваш ник</label>
                       <input
                         type="text"
                         value={complaintForm.yourNickname}
                         onChange={(e) => setComplaintForm({ ...complaintForm, yourNickname: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
                         placeholder="Введите ваш игровой ник"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Ник нарушителя</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Ник нарушителя</label>
                       <input
                         type="text"
                         value={complaintForm.targetNickname}
                         onChange={(e) => setComplaintForm({ ...complaintForm, targetNickname: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
                         placeholder="Ник игрока/состава"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Причина жалобы</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Причина жалобы</label>
                       <select
                         value={complaintForm.reason}
                         onChange={(e) => setComplaintForm({ ...complaintForm, reason: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
                       >
                         <option value="">Выберите причину</option>
                         <option value="grief">Гриферство</option>
@@ -299,22 +461,22 @@
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Описание нарушения</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Описание нарушения</label>
                       <textarea
                         value={complaintForm.description}
                         onChange={(e) => setComplaintForm({ ...complaintForm, description: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 h-32 resize-none"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 h-32 resize-none transition-all theme-transition`}
                         placeholder="Подробно опишите что произошло..."
                       />
                     </div>
 
                     <div>
-                      <label className="block text-gray-300 mb-2 font-medium">Доказательства (ссылки)</label>
+                      <label className={`block ${classes.label} mb-2 font-medium`}>Доказательства (ссылки)</label>
                       <input
                         type="text"
                         value={complaintForm.proof}
                         onChange={(e) => setComplaintForm({ ...complaintForm, proof: e.target.value })}
-                        className="w-full bg-gray-700 text-white px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
                         placeholder="Ссылки на скриншоты, видео и т.д."
                       />
                     </div>
@@ -322,24 +484,39 @@
                     <button
                       onClick={handleComplaintSubmit}
                       disabled={isSubmitting}
-                      className={`w-full font-bold py-3 rounded-lg transition-all transform ${
+                      className={`w-full font-bold py-3 rounded-lg transition-all transform button-enhanced submit-button ${
                         isSubmitting
                           ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                          : 'bg-green-500 hover:bg-green-600 text-white hover:scale-105'
+                          : 'bg-green-500 hover:bg-green-600 text-white'
                       }`}
                     >
-                      {isSubmitting ? 'Отправка...' : 'Отправить жалобу'}
+                      {isSubmitting ? (
+                        <>
+                          <span className="loading-spinner"></span>
+                          Отправка...
+                        </>
+                      ) : 'Отправить жалобу'}
                     </button>
                   </div>
                 )}
               </div>
+
+              <footer className={`mt-8 text-center pb-4 transition-colors duration-300 ${classes.footer}`}>
+                <div className="text-sm space-y-1">
+                  <div>tg: @dybeke</div>
+                  <div>ds: dybeky</div>
+                </div>
+              </footer>
             </div>
           </div>
         );
-      }
+      };
+
+      // ==================== MAIN ====================
+      // Main entry point - initializes the React application
 
       const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(<ServerForms />);
+      root.render(React.createElement(ServerForms));
     </script>
   </body>
 </html>
