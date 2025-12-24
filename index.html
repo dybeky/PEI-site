@@ -1,613 +1,800 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Unturned Server - Формы</title>
-    <meta name="description" content="Отправьте идею или жалобу для сервера Unturned" />
-
-    <!-- External Libraries -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Custom Styles -->
-    <link rel="stylesheet" href="css/styles.css" />
-
-    <!-- Critical CSS for instant orb rendering -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COBRA PEI #1 - Формы для сервера Unturned</title>
+    <meta name="description" content="Отправьте идею или жалобу для сервера COBRA PEI #1. Помогите улучшить игровой процесс!">
+    <link rel="icon" type="image/svg+xml" href="./public/favicon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <style>
-      /* Instant background - no flash */
-      body {
-        background: linear-gradient(-45deg, #0a0e27, #1a1f3a, #0f172a, #1e293b);
-        background-size: 400% 400%;
-        animation: gradientShift 15s ease infinite;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-      }
-
-      @keyframes gradientShift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-      }
-
-      /* Professional orb container - renders instantly */
-      .orb-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
-        z-index: 1;
-        overflow: hidden;
-      }
-
-      /* Instant orb styles - no React needed */
-      .orb {
-        position: absolute;
-        border-radius: 50%;
-        pointer-events: none;
-        filter: blur(1.5px);
-        transform: translateZ(0);
-        backface-visibility: hidden;
-        will-change: transform, opacity;
-      }
-
-      /* Color variants for visual variety */
-      .orb-white {
-        background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.9), rgba(200, 220, 255, 0.3), transparent);
-      }
-
-      .orb-cyan {
-        background: radial-gradient(circle at 30% 30%, rgba(100, 255, 255, 0.8), rgba(0, 200, 255, 0.3), transparent);
-      }
-
-      .orb-blue {
-        background: radial-gradient(circle at 30% 30%, rgba(150, 180, 255, 0.85), rgba(100, 150, 255, 0.3), transparent);
-      }
-
-      .orb-purple {
-        background: radial-gradient(circle at 30% 30%, rgba(200, 160, 255, 0.8), rgba(150, 100, 255, 0.3), transparent);
-      }
-
-      /* Multiple animation variants for variety */
-      @keyframes float1 {
-        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-        25% { transform: translate(40px, -30px) scale(1.1); opacity: 0.6; }
-        50% { transform: translate(-25px, 40px) scale(0.9); opacity: 0.5; }
-        75% { transform: translate(30px, 20px) scale(1.05); opacity: 0.55; }
-      }
-
-      @keyframes float2 {
-        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.35; }
-        33% { transform: translate(-35px, 35px) scale(1.08); opacity: 0.55; }
-        66% { transform: translate(35px, -20px) scale(0.92); opacity: 0.45; }
-      }
-
-      @keyframes float3 {
-        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.38; }
-        20% { transform: translate(25px, 30px) scale(1.12); opacity: 0.58; }
-        40% { transform: translate(-30px, -25px) scale(0.88); opacity: 0.42; }
-        60% { transform: translate(35px, 15px) scale(1.05); opacity: 0.52; }
-        80% { transform: translate(-20px, 30px) scale(0.95); opacity: 0.48; }
-      }
-
-      @keyframes glow {
-        0%, 100% {
-          box-shadow: 0 0 15px rgba(255, 255, 255, 0.3),
-                      0 0 30px rgba(200, 220, 255, 0.2),
-                      0 0 45px rgba(150, 180, 255, 0.1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        50% {
-          box-shadow: 0 0 25px rgba(255, 255, 255, 0.5),
-                      0 0 50px rgba(200, 220, 255, 0.3),
-                      0 0 75px rgba(150, 180, 255, 0.2);
+
+        body {
+            font-family: 'Press Start 2P', cursive;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            min-height: 100vh;
+            padding: 24px;
+            color: #fff;
+            font-size: 10px;
+            line-height: 1.6;
         }
-      }
+
+        .container {
+            max-width: 42rem;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 1.2rem;
+            font-weight: normal;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.6s ease-out 0.2s both;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 16px 20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: normal;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.65rem;
+            font-family: 'Press Start 2P', cursive;
+            position: relative;
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        .tab-button.active {
+            background: #000;
+            color: #fff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-button:not(.active) {
+            background: #1a1a1a;
+            color: #9ca3af;
+        }
+
+        .tab-button:not(.active):hover {
+            background: #262626;
+        }
+
+        .tab-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #fff;
+            margin-right: 8px;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+            border-radius: 0 0 8px 8px;
+            border-top-right-radius: 8px;
+            padding: 32px;
+            animation: fadeInUp 0.6s ease-out 0.3s both;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        h2 {
+            font-size: 1rem;
+            font-weight: normal;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #d1d5db;
+            margin-bottom: 8px;
+            font-weight: normal;
+            font-size: 0.7rem;
+            line-height: 1.6;
+        }
+
+        .required {
+            color: #f87171;
+        }
+
+        input[type="text"],
+        input[type="url"],
+        select,
+        textarea {
+            width: 100%;
+            background: #000;
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            transition: all 0.3s;
+            font-size: 0.7rem;
+            font-family: 'Press Start 2P', cursive;
+            line-height: 1.6;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            box-shadow: 0 0 0 2px #4b5563;
+            transform: scale(1.01);
+        }
+
+        textarea {
+            height: 128px;
+            resize: none;
+        }
+
+        .char-count {
+            font-size: 0.55rem;
+            color: #6b7280;
+            margin-top: 4px;
+            transition: color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        .char-count.warning {
+            color: #fbbf24;
+        }
+
+        .char-count.danger {
+            color: #f87171;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            font-weight: normal;
+            padding: 16px 12px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.7rem;
+            font-family: 'Press Start 2P', cursive;
+            background: #fff;
+            color: #000;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+            line-height: 1.6;
+        }
+
+        button[type="submit"]:hover {
+            background: #e5e5e5;
+            transform: translateY(-2px);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        footer {
+            margin-top: 32px;
+            text-align: center;
+            padding-bottom: 16px;
+            color: #9ca3af;
+        }
+
+        footer div {
+            font-size: 0.65rem;
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .toast {
+            background: #1a1a1a;
+            color: #fff;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            min-width: 300px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease-out;
+            font-family: 'Press Start 2P', cursive;
+        }
+
+        .toast.success {
+            border-left: 4px solid #10b981;
+        }
+
+        .toast.error {
+            border-left: 4px solid #ef4444;
+        }
+
+        .toast-title {
+            font-weight: normal;
+            margin-bottom: 8px;
+            font-size: 0.65rem;
+            line-height: 1.6;
+        }
+
+        .toast-message {
+            font-size: 0.55rem;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+
+        .toast.removing {
+            animation: slideOut 0.3s ease-out forwards;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -1000px 0;
+            }
+            100% {
+                background-position: 1000px 0;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 30px rgba(255, 255, 255, 0.9), 0 0 40px rgba(255, 255, 255, 0.6);
+            }
+        }
+
+        .header h1 {
+            animation: fadeIn 0.6s ease-out, glow 3s ease-in-out infinite;
+        }
+
+        button[type="submit"]::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        button[type="submit"]:hover::before {
+            left: 100%;
+        }
+
+        .tab-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .tab-button.active::after {
+            width: 80%;
+        }
+
+        .form-group {
+            animation: fadeInUp 0.4s ease-out backwards;
+        }
+
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .form-group:nth-child(3) { animation-delay: 0.3s; }
+        .form-group:nth-child(4) { animation-delay: 0.4s; }
+        .form-group:nth-child(5) { animation-delay: 0.5s; }
+
+        input[type="text"]:hover,
+        input[type="url"]:hover,
+        select:hover,
+        textarea:hover {
+            background: #0a0a0a;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-indicator {
+            animation: pulse 2s ease-in-out infinite;
+        }
     </style>
-  </head>
-  <body>
-    <!-- Orbs render instantly with pure CSS - no JS delay -->
-    <div class="orb-canvas" id="orb-container"></div>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>COBRA PEI #1 - BEZ ВЫХИ</h1>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('ideas')">
+                <span class="tab-indicator"></span>
+                идеи для сервера
+            </button>
+            <button class="tab-button" onclick="switchTab('complaints')">
+                <span class="tab-indicator"></span>
+                жалобы на состав
+            </button>
+        </div>
+
+        <div class="form-container">
+            <!-- Ideas Form -->
+            <div id="ideas-panel" class="tab-panel active">
+                <form id="idea-form" onsubmit="handleIdeaSubmit(event)">
+                    <h2>Предложить идею</h2>
+
+                    <div class="form-group">
+                        <label for="idea-nickname">Ваш ник <span class="required">*</span></label>
+                        <input type="text" id="idea-nickname" placeholder="Введите ваш игровой ник" maxlength="50" required>
+                        <div class="char-count"><span id="idea-nickname-count">0</span>/50 символов</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idea-title">Название идеи <span class="required">*</span></label>
+                        <input type="text" id="idea-title" placeholder="Краткое название вашей идеи" maxlength="100" required>
+                        <div class="char-count"><span id="idea-title-count">0</span>/100 символов</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idea-category">Категория <span class="required">*</span></label>
+                        <select id="idea-category" required>
+                            <option value="">Выберите категорию</option>
+                            <option value="gameplay">Игровой процесс</option>
+                            <option value="events">События</option>
+                            <option value="economy">Экономика</option>
+                            <option value="technical">Технические улучшения</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="idea-description">Описание идеи <span class="required">*</span></label>
+                        <textarea id="idea-description" placeholder="Подробно опишите вашу идею..." maxlength="1000" required></textarea>
+                        <div class="char-count"><span id="idea-description-count">0</span>/1000 символов</div>
+                    </div>
+
+                    <button type="submit">Отправить идею</button>
+                </form>
+            </div>
+
+            <!-- Complaints Form -->
+            <div id="complaints-panel" class="tab-panel">
+                <form id="complaint-form" onsubmit="handleComplaintSubmit(event)">
+                    <h2>Подать жалобу</h2>
+
+                    <div class="form-group">
+                        <label for="complaint-your-nickname">Ваш ник <span class="required">*</span></label>
+                        <input type="text" id="complaint-your-nickname" placeholder="Введите ваш игровой ник" maxlength="50" required>
+                        <div class="char-count"><span id="complaint-your-nickname-count">0</span>/50 символов</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="complaint-target-nickname">Ник нарушителя <span class="required">*</span></label>
+                        <input type="text" id="complaint-target-nickname" placeholder="Ник игрока/состава" maxlength="50" required>
+                        <div class="char-count"><span id="complaint-target-nickname-count">0</span>/50 символов</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="complaint-reason">Причина жалобы <span class="required">*</span></label>
+                        <select id="complaint-reason" required>
+                            <option value="">Выберите причину</option>
+                            <option value="grief">Гриферство</option>
+                            <option value="abuse">Оскорбления</option>
+                            <option value="cheat">Читы/Нечестная игра</option>
+                            <option value="spam">Спам</option>
+                            <option value="scam">Мошенничество</option>
+                            <option value="other">Другое</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="complaint-description">Описание нарушения <span class="required">*</span></label>
+                        <textarea id="complaint-description" placeholder="Подробно опишите что произошло..." maxlength="1000" required></textarea>
+                        <div class="char-count"><span id="complaint-description-count">0</span>/1000 символов</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="complaint-proof">Доказательства (ссылки)</label>
+                        <input type="url" id="complaint-proof" placeholder="https://example.com/screenshot.png" maxlength="500">
+                        <div class="char-count"><span id="complaint-proof-count">0</span>/500 символов</div>
+                    </div>
+
+                    <button type="submit">Отправить жалобу</button>
+                </form>
+            </div>
+        </div>
+
+        <footer>
+            <div>tg: @dybeky</div>
+            <div>ds: dybeky</div>
+        </footer>
+    </div>
+
+    <div class="toast-container" id="toast-container"></div>
 
     <script>
-      // Generate orbs immediately - runs before React loads
-      (function() {
-        const container = document.getElementById('orb-container');
-        const orbCount = 35;
-        const animations = ['float1', 'float2', 'float3'];
-        const colorClasses = ['orb-white', 'orb-white', 'orb-white', 'orb-cyan', 'orb-blue', 'orb-purple'];
+        // Character counters
+        const setupCharCounter = (inputId, counterId) => {
+            const input = document.getElementById(inputId);
+            const counter = document.getElementById(counterId);
+            if (input && counter) {
+                const maxLength = parseInt(input.getAttribute('maxlength'));
+                input.addEventListener('input', () => {
+                    const length = input.value.length;
+                    counter.textContent = length;
 
-        for (let i = 0; i < orbCount; i++) {
-          const orb = document.createElement('div');
-          const colorClass = colorClasses[Math.floor(Math.random() * colorClasses.length)];
-          orb.className = `orb ${colorClass}`;
+                    const parent = counter.parentElement;
+                    parent.classList.remove('warning', 'danger');
 
-          const size = Math.random() * 10 + 6; // 6-16px
-          const left = Math.random() * 100;
-          const top = Math.random() * 100;
-          const duration = Math.random() * 10 + 15; // 15-25s
-          const delay = Math.random() * -20; // stagger start
-          const glowDuration = Math.random() * 4 + 6; // 6-10s
-          const animType = animations[Math.floor(Math.random() * animations.length)];
-
-          orb.style.cssText = `
-            width: ${size}px;
-            height: ${size}px;
-            left: ${left}%;
-            top: ${top}%;
-            animation: ${animType} ${duration}s ease-in-out infinite ${delay}s,
-                       glow ${glowDuration}s ease-in-out infinite ${delay * 0.5}s;
-          `;
-
-          container.appendChild(orb);
-        }
-      })();
-    </script>
-
-    <div id="root"></div>
-
-    <!-- All JavaScript in one file to avoid CORS issues with file:// protocol -->
-    <script type="text/babel">
-      // ==================== CONFIG ====================
-      // Discord Webhook URLs
-      const IDEA_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1452744051538395166/DycJdRWdIhQXEhKR-1eIPo7lP-mWHzJJVFSBLO3eAOlhzIX6gb7j7i9ALvLkq_wcpCnY';
-      const COMPLAINT_WEBHOOK_URL = 'https://discordapp.com/api/webhooks/1452744159008915558/PBRmrfbqgHi_N7NqAhknpax5KPyN-AkMG9NTVUfk6FgP1KHsKJUq2_YzFRhTlQx8mOEl';
-
-      // Category Labels
-      const CATEGORY_LABELS = {
-        gameplay: 'Игровой процесс',
-        events: 'События',
-        economy: 'Экономика',
-        technical: 'Технические улучшения',
-        other: 'Другое'
-      };
-
-      // Reason Labels
-      const REASON_LABELS = {
-        grief: 'Гриферство',
-        abuse: 'Оскорбления',
-        cheat: 'Читы/Нечестная игра',
-        spam: 'Спам',
-        scam: 'Мошенничество',
-        other: 'Другое'
-      };
-
-      // ==================== SERVICES ====================
-      // Discord Service - handles sending messages to Discord webhooks
-
-      async function sendToDiscord(webhookUrl, embedData, shouldMention = true) {
-        const payload = {
-          content: shouldMention ? '<@454319586960080897>' : '',
-          embeds: [embedData]
-        };
-
-        const response = await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) {
-          throw new Error('Ошибка отправки');
-        }
-      }
-
-      // Idea submission handler
-      async function submitIdea(ideaForm) {
-        if (!ideaForm.nickname || !ideaForm.ideaTitle || !ideaForm.description || !ideaForm.category) {
-          throw new Error('Пожалуйста, заполните все поля');
-        }
-
-        if (IDEA_WEBHOOK_URL === 'YOUR_IDEA_WEBHOOK_URL_HERE') {
-          throw new Error('Ошибка: Webhook URL не настроен. Пожалуйста, добавьте ваш Discord Webhook URL в код.');
-        }
-
-        const embed = {
-          title: '💡 Новая идея',
-          description: '**Получена новая идея для сервера**',
-          color: 16766720,
-          fields: [
-            {
-              name: '👤 Автор',
-              value: `\`${ideaForm.nickname}\``,
-              inline: true
-            },
-            {
-              name: '📁 Категория',
-              value: `\`${CATEGORY_LABELS[ideaForm.category]}\``,
-              inline: true
-            },
-            {
-              name: '\u200B',
-              value: '\u200B',
-              inline: true
-            },
-            {
-              name: '📌 Название',
-              value: `**${ideaForm.ideaTitle}**`,
-              inline: false
-            },
-            {
-              name: '📝 Описание',
-              value: ideaForm.description,
-              inline: false
+                    if (length > maxLength * 0.9) {
+                        parent.classList.add('danger');
+                    } else if (length > maxLength * 0.7) {
+                        parent.classList.add('warning');
+                    }
+                });
             }
-          ],
-          footer: {
-            text: 'Unturned Server Forms'
-          },
-          timestamp: new Date().toISOString()
         };
 
-        await sendToDiscord(IDEA_WEBHOOK_URL, embed, true);
-      }
+        setupCharCounter('idea-nickname', 'idea-nickname-count');
+        setupCharCounter('idea-title', 'idea-title-count');
+        setupCharCounter('idea-description', 'idea-description-count');
+        setupCharCounter('complaint-your-nickname', 'complaint-your-nickname-count');
+        setupCharCounter('complaint-target-nickname', 'complaint-target-nickname-count');
+        setupCharCounter('complaint-description', 'complaint-description-count');
+        setupCharCounter('complaint-proof', 'complaint-proof-count');
 
-      // Complaint submission handler
-      async function submitComplaint(complaintForm) {
-        if (!complaintForm.yourNickname || !complaintForm.targetNickname || !complaintForm.reason || !complaintForm.description) {
-          throw new Error('Пожалуйста, заполните все обязательные поля');
-        }
+        // Tab switching
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab-button');
+            const panels = document.querySelectorAll('.tab-panel');
 
-        if (COMPLAINT_WEBHOOK_URL === 'YOUR_COMPLAINT_WEBHOOK_URL_HERE') {
-          throw new Error('Ошибка: Webhook URL не настроен. Пожалуйста, добавьте ваш Discord Webhook URL в код.');
-        }
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => {
+                p.style.animation = 'none';
+                p.classList.remove('active');
+            });
 
-        const embed = {
-          title: '🚨 Новая жалоба',
-          description: '**Получена новая жалоба на игрока**',
-          color: 15158332,
-          fields: [
-            {
-              name: '👤 От кого',
-              value: `\`${complaintForm.yourNickname}\``,
-              inline: true
-            },
-            {
-              name: '🎯 На кого',
-              value: `\`${complaintForm.targetNickname}\``,
-              inline: true
-            },
-            {
-              name: '\u200B',
-              value: '\u200B',
-              inline: true
-            },
-            {
-              name: '⚠️ Причина',
-              value: `**${REASON_LABELS[complaintForm.reason]}**`,
-              inline: false
-            },
-            {
-              name: '📝 Описание',
-              value: complaintForm.description,
-              inline: false
+            if (tab === 'ideas') {
+                tabs[0].classList.add('active');
+                const panel = document.getElementById('ideas-panel');
+                setTimeout(() => {
+                    panel.style.animation = 'fadeInUp 0.4s ease-out';
+                    panel.classList.add('active');
+                }, 10);
+            } else {
+                tabs[1].classList.add('active');
+                const panel = document.getElementById('complaints-panel');
+                setTimeout(() => {
+                    panel.style.animation = 'fadeInUp 0.4s ease-out';
+                    panel.classList.add('active');
+                }, 10);
             }
-          ],
-          footer: {
-            text: 'Unturned Server Forms'
-          },
-          timestamp: new Date().toISOString()
-        };
-
-        if (complaintForm.proof) {
-          embed.fields.push({
-            name: '🔗 Доказательства',
-            value: complaintForm.proof,
-            inline: false
-          });
         }
 
-        await sendToDiscord(COMPLAINT_WEBHOOK_URL, embed, true);
-      }
+        // Toast notifications
+        function showToast(title, type, message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div class="toast-title">${title}</div>
+                ${message ? `<div class="toast-message">${message}</div>` : ''}
+            `;
+            container.appendChild(toast);
 
-      // ==================== UTILS ====================
-      // Theme utilities - handles theme-specific styling classes
+            setTimeout(() => {
+                toast.classList.add('removing');
+                setTimeout(() => {
+                    if (toast.parentNode === container) {
+                        container.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
 
-      const getThemeClasses = (theme) => ({
-        background: theme === 'dark' ? 'animated-gradient-dark' : 'animated-gradient-light',
-        card: theme === 'dark'
-          ? 'bg-gradient-to-br from-gray-800 to-gray-900 shadow-2xl border border-gray-700'
-          : 'bg-white shadow-xl border border-gray-200',
-        input: theme === 'dark'
-          ? 'bg-gray-700'
-          : 'bg-white border-2 border-gray-300 focus:border-blue-500',
-        text: theme === 'dark' ? 'text-white' : 'text-gray-900',
-        label: theme === 'dark' ? 'text-gray-300' : 'text-gray-800',
-        tabActive: theme === 'dark'
-          ? 'bg-gray-800 text-white'
-          : 'bg-white text-gray-900 shadow-md',
-        tabInactive: theme === 'dark'
-          ? 'bg-gray-700 text-gray-400 hover:bg-gray-650'
-          : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:shadow',
-        footer: theme === 'dark' ? 'text-gray-400' : 'text-gray-700'
-      });
-
-      // ==================== COMPONENTS ====================
-      // Orbs are now rendered instantly with vanilla JS before React loads
-      // No React component needed - better performance!
-
-      // Main App Component
-      const ServerForms = () => {
-        const { useState } = React;
-
-        const [activeTab, setActiveTab] = useState('ideas');
-        const [isSubmitting, setIsSubmitting] = useState(false);
-        const [theme, setTheme] = useState('dark');
-        const [ideaForm, setIdeaForm] = useState({
-          nickname: '',
-          ideaTitle: '',
-          description: '',
-          category: ''
-        });
-        const [complaintForm, setComplaintForm] = useState({
-          yourNickname: '',
-          targetNickname: '',
-          reason: '',
-          description: '',
-          proof: ''
-        });
-
-        const handleIdeaSubmit = async () => {
-          setIsSubmitting(true);
-          try {
-            await submitIdea(ideaForm);
-            alert('Ваша идея успешно отправлена!');
-            setIdeaForm({ nickname: '', ideaTitle: '', description: '', category: '' });
-          } catch (error) {
-            alert(error.message || 'Произошла ошибка при отправке. Попробуйте позже.');
-            console.error('Error:', error);
-          } finally {
-            setIsSubmitting(false);
-          }
+        // Discord webhook URLs
+        const DISCORD_WEBHOOKS = {
+            ideas: 'https://discordapp.com/api/webhooks/1452744051538395166/DycJdRWdIhQXEhKR-1eIPo7lP-mWHzJJVFSBLO3eAOlhzIX6gb7j7i9ALvLkq_wcpCnY',
+            complaints: 'https://discordapp.com/api/webhooks/1452744159008915558/PBRmrfbqgHi_N7NqAhknpax5KPyN-AkMG9NTVUfk6FgP1KHsKJUq2_YzFRhTlQx8mOEl'
         };
 
-        const handleComplaintSubmit = async () => {
-          setIsSubmitting(true);
-          try {
-            await submitComplaint(complaintForm);
-            alert('Ваша жалоба успешно отправлена!');
-            setComplaintForm({ yourNickname: '', targetNickname: '', reason: '', description: '', proof: '' });
-          } catch (error) {
-            alert(error.message || 'Произошла ошибка при отправке. Попробуйте позже.');
-            console.error('Error:', error);
-          } finally {
-            setIsSubmitting(false);
-          }
+        const DISCORD_USER_ID = '454319586960080897';
+
+        // Category translations
+        const CATEGORY_NAMES = {
+            gameplay: 'Игровой процесс',
+            events: 'События',
+            economy: 'Экономика',
+            technical: 'Технические улучшения',
+            other: 'Другое',
+            grief: 'Гриферство',
+            abuse: 'Оскорбления',
+            cheat: 'Читы/Нечестная игра',
+            spam: 'Спам',
+            scam: 'Мошенничество'
         };
 
-        const classes = getThemeClasses(theme);
+        // Form submissions
+        async function handleIdeaSubmit(e) {
+            e.preventDefault();
+            const form = document.getElementById('idea-form');
+            const button = form.querySelector('button[type="submit"]');
 
-        return (
-          <div className={`min-h-screen ${classes.background} p-6 theme-transition`}>
-            <div className="max-w-2xl mx-auto relative z-10">
-              <div className="text-center mb-6 animate-fade-in">
-                <h1 className={`text-3xl font-bold ${
-                  theme === 'dark' ? 'text-cyan-300' : 'text-blue-600'
-                }`}>
-                  COBRA PEI #1 - BEZ ВЫХИ
-                </h1>
-              </div>
+            button.style.transform = 'scale(0.95)';
+            button.disabled = true;
+            button.textContent = 'Отправка...';
 
-              <div className="flex justify-end mb-4 animate-fade-in delay-100">
-                <button
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  className={`p-3 rounded-lg transition-all duration-300 hover:scale-110 ${
-                    theme === 'dark' ? 'bg-gray-700 text-yellow-300' : 'bg-gray-200 text-gray-700'
-                  }`}
-                  aria-label="Переключить тему"
-                >
-                  {theme === 'dark' ? (
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
+            const nickname = document.getElementById('idea-nickname').value;
+            const title = document.getElementById('idea-title').value;
+            const category = document.getElementById('idea-category').value;
+            const description = document.getElementById('idea-description').value;
 
-              <div className="flex gap-1 mb-6 animate-fade-in delay-200">
-                <button
-                  onClick={() => setActiveTab('ideas')}
-                  className={`flex-1 px-6 py-3 rounded-t-lg font-medium transition-all tab-button ${
-                    activeTab === 'ideas'
-                      ? `${classes.tabActive} border-b-2 border-yellow-500`
-                      : classes.tabInactive
-                  }`}
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-yellow-500 mr-2"></span>
-                  идеи для сервера
-                </button>
-                <button
-                  onClick={() => setActiveTab('complaints')}
-                  className={`flex-1 px-6 py-3 rounded-t-lg font-medium transition-all tab-button ${
-                    activeTab === 'complaints'
-                      ? `${classes.tabActive} border-b-2 border-green-500`
-                      : classes.tabInactive
-                  }`}
-                >
-                  <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
-                  жалобы на состав
-                </button>
-              </div>
+            const embed = {
+                title: '💡 Новая идея для сервера',
+                color: 0x3498db, // Blue color
+                fields: [
+                    {
+                        name: '👤 Ник игрока',
+                        value: nickname,
+                        inline: true
+                    },
+                    {
+                        name: '📁 Категория',
+                        value: CATEGORY_NAMES[category] || category,
+                        inline: true
+                    },
+                    {
+                        name: '📝 Название идеи',
+                        value: title,
+                        inline: false
+                    },
+                    {
+                        name: '📄 Описание',
+                        value: description,
+                        inline: false
+                    }
+                ],
+                timestamp: new Date().toISOString(),
+                footer: {
+                    text: 'COBRA PEI #1 - Система идей'
+                }
+            };
 
-              <div className={`${classes.card} rounded-b-lg rounded-tr-lg p-8 shadow-2xl theme-transition animate-fade-in-up delay-300`}>
-                {activeTab === 'ideas' && (
-                  <div className="space-y-5">
-                    <h2 className={`text-2xl font-bold ${classes.text} mb-6`}>Предложить идею</h2>
+            try {
+                const response = await fetch(DISCORD_WEBHOOKS.ideas, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: `<@${DISCORD_USER_ID}>`,
+                        embeds: [embed]
+                    })
+                });
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Ваш ник</label>
-                      <input
-                        type="text"
-                        value={ideaForm.nickname}
-                        onChange={(e) => setIdeaForm({ ...ideaForm, nickname: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all theme-transition`}
-                        placeholder="Введите ваш игровой ник"
-                      />
-                    </div>
+                if (response.ok) {
+                    showToast(
+                        'Идея успешно отправлена!',
+                        'success',
+                        'Спасибо за ваше предложение!'
+                    );
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Название идеи</label>
-                      <input
-                        type="text"
-                        value={ideaForm.ideaTitle}
-                        onChange={(e) => setIdeaForm({ ...ideaForm, ideaTitle: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all theme-transition`}
-                        placeholder="Краткое название вашей идеи"
-                      />
-                    </div>
+                    form.reset();
+                    document.querySelectorAll('[id$="-count"]').forEach(el => {
+                        el.textContent = '0';
+                        el.parentElement.classList.remove('warning', 'danger');
+                    });
+                } else {
+                    throw new Error('Ошибка отправки');
+                }
+            } catch (error) {
+                showToast(
+                    'Ошибка отправки',
+                    'error',
+                    'Попробуйте еще раз позже'
+                );
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Отправить идею';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 150);
+            }
+        }
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Категория</label>
-                      <select
-                        value={ideaForm.category}
-                        onChange={(e) => setIdeaForm({ ...ideaForm, category: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 transition-all theme-transition`}
-                      >
-                        <option value="">Выберите категорию</option>
-                        <option value="gameplay">Игровой процесс</option>
-                        <option value="events">События</option>
-                        <option value="economy">Экономика</option>
-                        <option value="technical">Технические улучшения</option>
-                        <option value="other">Другое</option>
-                      </select>
-                    </div>
+        async function handleComplaintSubmit(e) {
+            e.preventDefault();
+            const form = document.getElementById('complaint-form');
+            const button = form.querySelector('button[type="submit"]');
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Описание идеи</label>
-                      <textarea
-                        value={ideaForm.description}
-                        onChange={(e) => setIdeaForm({ ...ideaForm, description: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-500 h-32 resize-none transition-all theme-transition`}
-                        placeholder="Подробно опишите вашу идею..."
-                      />
-                    </div>
+            button.style.transform = 'scale(0.95)';
+            button.disabled = true;
+            button.textContent = 'Отправка...';
 
-                    <button
-                      onClick={handleIdeaSubmit}
-                      disabled={isSubmitting}
-                      className={`w-full font-bold py-3 rounded-lg transition-all transform button-enhanced submit-button ${
-                        isSubmitting
-                          ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                          : 'bg-yellow-500 hover:bg-yellow-600 text-gray-900'
-                      }`}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className="loading-spinner"></span>
-                          Отправка...
-                        </>
-                      ) : 'Отправить идею'}
-                    </button>
-                  </div>
-                )}
+            const yourNickname = document.getElementById('complaint-your-nickname').value;
+            const targetNickname = document.getElementById('complaint-target-nickname').value;
+            const reason = document.getElementById('complaint-reason').value;
+            const description = document.getElementById('complaint-description').value;
+            const proof = document.getElementById('complaint-proof').value;
 
-                {activeTab === 'complaints' && (
-                  <div className="space-y-5">
-                    <h2 className={`text-2xl font-bold ${classes.text} mb-6`}>Подать жалобу</h2>
+            const embed = {
+                title: '⚠️ Новая жалоба на нарушение',
+                color: 0xe74c3c, // Red color
+                fields: [
+                    {
+                        name: '👤 Отправитель',
+                        value: yourNickname,
+                        inline: true
+                    },
+                    {
+                        name: '🎯 Нарушитель',
+                        value: targetNickname,
+                        inline: true
+                    },
+                    {
+                        name: '⚡ Причина',
+                        value: CATEGORY_NAMES[reason] || reason,
+                        inline: true
+                    },
+                    {
+                        name: '📄 Описание нарушения',
+                        value: description,
+                        inline: false
+                    }
+                ],
+                timestamp: new Date().toISOString(),
+                footer: {
+                    text: 'COBRA PEI #1 - Система жалоб'
+                }
+            };
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Ваш ник</label>
-                      <input
-                        type="text"
-                        value={complaintForm.yourNickname}
-                        onChange={(e) => setComplaintForm({ ...complaintForm, yourNickname: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
-                        placeholder="Введите ваш игровой ник"
-                      />
-                    </div>
+            if (proof && proof.trim() !== '') {
+                embed.fields.push({
+                    name: '🔗 Доказательства',
+                    value: proof,
+                    inline: false
+                });
+            }
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Ник нарушителя</label>
-                      <input
-                        type="text"
-                        value={complaintForm.targetNickname}
-                        onChange={(e) => setComplaintForm({ ...complaintForm, targetNickname: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
-                        placeholder="Ник игрока/состава"
-                      />
-                    </div>
+            try {
+                const response = await fetch(DISCORD_WEBHOOKS.complaints, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        content: `<@${DISCORD_USER_ID}>`,
+                        embeds: [embed]
+                    })
+                });
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Причина жалобы</label>
-                      <select
-                        value={complaintForm.reason}
-                        onChange={(e) => setComplaintForm({ ...complaintForm, reason: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
-                      >
-                        <option value="">Выберите причину</option>
-                        <option value="grief">Гриферство</option>
-                        <option value="abuse">Оскорбления</option>
-                        <option value="cheat">Читы/Нечестная игра</option>
-                        <option value="spam">Спам</option>
-                        <option value="scam">Мошенничество</option>
-                        <option value="other">Другое</option>
-                      </select>
-                    </div>
+                if (response.ok) {
+                    showToast(
+                        'Жалоба успешно отправлена!',
+                        'success',
+                        'Ваша жалоба будет рассмотрена администрацией'
+                    );
 
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Описание нарушения</label>
-                      <textarea
-                        value={complaintForm.description}
-                        onChange={(e) => setComplaintForm({ ...complaintForm, description: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 h-32 resize-none transition-all theme-transition`}
-                        placeholder="Подробно опишите что произошло..."
-                      />
-                    </div>
-
-                    <div>
-                      <label className={`block ${classes.label} mb-2 font-medium`}>Доказательства (ссылки)</label>
-                      <input
-                        type="text"
-                        value={complaintForm.proof}
-                        onChange={(e) => setComplaintForm({ ...complaintForm, proof: e.target.value })}
-                        className={`w-full ${classes.input} ${classes.text} px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-all theme-transition`}
-                        placeholder="Ссылки на скриншоты, видео и т.д."
-                      />
-                    </div>
-
-                    <button
-                      onClick={handleComplaintSubmit}
-                      disabled={isSubmitting}
-                      className={`w-full font-bold py-3 rounded-lg transition-all transform button-enhanced submit-button ${
-                        isSubmitting
-                          ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                          : 'bg-green-500 hover:bg-green-600 text-white'
-                      }`}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className="loading-spinner"></span>
-                          Отправка...
-                        </>
-                      ) : 'Отправить жалобу'}
-                    </button>
-                  </div>
-                )}
-              </div>
-
-              <footer className={`mt-8 text-center pb-4 transition-colors duration-300 ${classes.footer}`}>
-                <div className="text-sm space-y-1">
-                  <div>tg: @dybeky</div>
-                  <div>ds: dybeky</div>
-                </div>
-              </footer>
-            </div>
-          </div>
-        );
-      };
-
-      // ==================== MAIN ====================
-      // Main entry point - initializes the React application
-
-      const root = ReactDOM.createRoot(document.getElementById('root'));
-      root.render(React.createElement(ServerForms));
+                    form.reset();
+                    document.querySelectorAll('[id$="-count"]').forEach(el => {
+                        el.textContent = '0';
+                        el.parentElement.classList.remove('warning', 'danger');
+                    });
+                } else {
+                    throw new Error('Ошибка отправки');
+                }
+            } catch (error) {
+                showToast(
+                    'Ошибка отправки',
+                    'error',
+                    'Попробуйте еще раз позже'
+                );
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Отправить жалобу';
+                setTimeout(() => {
+                    button.style.transform = '';
+                }, 150);
+            }
+        }
     </script>
-  </body>
+</body>
 </html>
