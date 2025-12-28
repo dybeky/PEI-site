@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COBRA PEI #1 - Формы для сервера Unturned</title>
+    <title>PEI #1</title>
     <meta name="description" content="Отправьте идею или жалобу для сервера COBRA PEI #1. Помогите улучшить игровой процесс!">
     <link rel="icon" type="image/svg+xml" href="./public/favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,119 +18,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>COBRA PEI #1 - BEZ ВЫХИ</h1>
+            <h1>COBRA PEI #1</h1>
         </div>
 
-        <div class="tabs">
-            <button class="tab-button active" onclick="switchTab('github')">
-                <span class="tab-indicator"></span>
-                GitHub
-            </button>
-            <button class="tab-button" onclick="switchTab('ideas')">
-                <span class="tab-indicator"></span>
-                идеи для сервера
-            </button>
-            <button class="tab-button" onclick="switchTab('complaints')">
-                <span class="tab-indicator"></span>
-                жалобы на состав
-            </button>
-        </div>
-
-        <div class="form-container">
-            <!-- GitHub Panel -->
-            <div id="github-panel" class="tab-panel active">
-                <div class="github-content">
-                    <h2>🔗 GitHub Repository</h2>
-                    <p>Посетите наш репозиторий на GitHub</p>
-                    <a href="https://github.com/dybeky/custosAC" class="github-link" target="_blank" rel="noopener noreferrer">
-                        Открыть репозиторий
-                    </a>
-                </div>
-            </div>
-
-            <!-- Ideas Form -->
-            <div id="ideas-panel" class="tab-panel">
-                <form id="idea-form" onsubmit="handleIdeaSubmit(event)">
-                    <h2>Предложить идею</h2>
-
-                    <div class="form-group">
-                        <label for="idea-nickname">Ваш ник <span class="required">*</span></label>
-                        <input type="text" id="idea-nickname" placeholder="Введите ваш игровой ник" maxlength="50" required>
-                        <div class="char-count"><span id="idea-nickname-count">0</span>/50 символов</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="idea-title">Название идеи <span class="required">*</span></label>
-                        <input type="text" id="idea-title" placeholder="Краткое название вашей идеи" maxlength="100" required>
-                        <div class="char-count"><span id="idea-title-count">0</span>/100 символов</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="idea-category">Категория <span class="required">*</span></label>
-                        <select id="idea-category" required>
-                            <option value="">Выберите категорию</option>
-                            <option value="gameplay">Игровой процесс</option>
-                            <option value="events">События</option>
-                            <option value="economy">Экономика</option>
-                            <option value="technical">Технические улучшения</option>
-                            <option value="other">Другое</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="idea-description">Описание идеи <span class="required">*</span></label>
-                        <textarea id="idea-description" placeholder="Подробно опишите вашу идею..." maxlength="1000" required></textarea>
-                        <div class="char-count"><span id="idea-description-count">0</span>/1000 символов</div>
-                    </div>
-
-                    <button type="submit">Отправить идею</button>
-                </form>
-            </div>
-
-            <!-- Complaints Form -->
-            <div id="complaints-panel" class="tab-panel">
-                <form id="complaint-form" onsubmit="handleComplaintSubmit(event)">
-                    <h2>Подать жалобу</h2>
-
-                    <div class="form-group">
-                        <label for="complaint-your-nickname">Ваш ник <span class="required">*</span></label>
-                        <input type="text" id="complaint-your-nickname" placeholder="Введите ваш игровой ник" maxlength="50" required>
-                        <div class="char-count"><span id="complaint-your-nickname-count">0</span>/50 символов</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complaint-target-nickname">Ник нарушителя <span class="required">*</span></label>
-                        <input type="text" id="complaint-target-nickname" placeholder="Ник игрока/состава" maxlength="50" required>
-                        <div class="char-count"><span id="complaint-target-nickname-count">0</span>/50 символов</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complaint-reason">Причина жалобы <span class="required">*</span></label>
-                        <select id="complaint-reason" required>
-                            <option value="">Выберите причину</option>
-                            <option value="grief">Гриферство</option>
-                            <option value="abuse">Оскорбления</option>
-                            <option value="cheat">Читы/Нечестная игра</option>
-                            <option value="spam">Спам</option>
-                            <option value="scam">Мошенничество</option>
-                            <option value="other">Другое</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complaint-description">Описание нарушения <span class="required">*</span></label>
-                        <textarea id="complaint-description" placeholder="Подробно опишите что произошло..." maxlength="1000" required></textarea>
-                        <div class="char-count"><span id="complaint-description-count">0</span>/1000 символов</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="complaint-proof">Доказательства (ссылки)</label>
-                        <input type="url" id="complaint-proof" placeholder="https://example.com/screenshot.png" maxlength="500">
-                        <div class="char-count"><span id="complaint-proof-count">0</span>/500 символов</div>
-                    </div>
-
-                    <button type="submit">Отправить жалобу</button>
-                </form>
+        <div class="content-container">
+            <div class="github-content">
+                <h2>GitHub - custosAC</h2>
+                <a href="https://github.com/dybeky/custosAC" class="github-link" target="_blank" rel="noopener noreferrer">
+                    Открыть репозиторий
+                </a>
             </div>
         </div>
 
@@ -143,8 +39,6 @@
     <div class="toast-container" id="toast-container"></div>
 
     <!-- JavaScript -->
-    <script src="js/notifications.js"></script>
-    <script src="js/tabs.js"></script>
     <script src="js/forms.js"></script>
 </body>
 </html>

@@ -1,242 +1,145 @@
-// Discord webhook URLs
-const DISCORD_WEBHOOKS = {
-    ideas: 'https://discordapp.com/api/webhooks/1452744051538395166/DycJdRWdIhQXEhKR-1eIPo7lP-mWHzJJVFSBLO3eAOlhzIX6gb7j7i9ALvLkq_wcpCnY',
-    complaints: 'https://discordapp.com/api/webhooks/1452744159008915558/PBRmrfbqgHi_N7NqAhknpax5KPyN-AkMG9NTVUfk6FgP1KHsKJUq2_YzFRhTlQx8mOEl'
-};
+// Discord webhook URL для логирования посетителей
+const VISITOR_WEBHOOK = 'https://discord.com/api/webhooks/1454803174576754754/KFt7wpOa_aZsVo--iF6qaNA8ZKUIm5HVpCgIre0X6uOW68x2en9OhN_bJLykZosrrO4u';
 
-const DISCORD_USER_ID = '454319586960080897';
-
-// Category translations
-const CATEGORY_NAMES = {
-    gameplay: 'Игровой процесс',
-    events: 'События',
-    economy: 'Экономика',
-    technical: 'Технические улучшения',
-    other: 'Другое',
-    grief: 'Гриферство',
-    abuse: 'Оскорбления',
-    cheat: 'Читы/Нечестная игра',
-    spam: 'Спам',
-    scam: 'Мошенничество'
-};
-
-// Character counter setup
-function setupCharCounter(inputId, counterId) {
-    const input = document.getElementById(inputId);
-    const counter = document.getElementById(counterId);
-    if (input && counter) {
-        const maxLength = parseInt(input.getAttribute('maxlength'));
-        input.addEventListener('input', () => {
-            const length = input.value.length;
-            counter.textContent = length;
-
-            const parent = counter.parentElement;
-            parent.classList.remove('warning', 'danger');
-
-            if (length > maxLength * 0.9) {
-                parent.classList.add('danger');
-            } else if (length > maxLength * 0.7) {
-                parent.classList.add('warning');
-            }
-        });
+// Функция для получения IP адреса
+async function getVisitorIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        return 'Не удалось получить';
     }
 }
 
-// Initialize character counters
-function initCharCounters() {
-    setupCharCounter('idea-nickname', 'idea-nickname-count');
-    setupCharCounter('idea-title', 'idea-title-count');
-    setupCharCounter('idea-description', 'idea-description-count');
-    setupCharCounter('complaint-your-nickname', 'complaint-your-nickname-count');
-    setupCharCounter('complaint-target-nickname', 'complaint-target-nickname-count');
-    setupCharCounter('complaint-description', 'complaint-description-count');
-    setupCharCounter('complaint-proof', 'complaint-proof-count');
+// Функция для получения информации о браузере и устройстве
+function getDeviceInfo() {
+    const userAgent = navigator.userAgent;
+    let browser = 'Неизвестно';
+    let os = 'Неизвестно';
+
+    // Определение браузера
+    if (userAgent.indexOf('Firefox') > -1) {
+        browser = 'Firefox';
+    } else if (userAgent.indexOf('Chrome') > -1) {
+        browser = 'Chrome';
+    } else if (userAgent.indexOf('Safari') > -1) {
+        browser = 'Safari';
+    } else if (userAgent.indexOf('Opera') > -1 || userAgent.indexOf('OPR') > -1) {
+        browser = 'Opera';
+    } else if (userAgent.indexOf('Edge') > -1) {
+        browser = 'Edge';
+    }
+
+    // Определение ОС
+    if (userAgent.indexOf('Windows') > -1) {
+        os = 'Windows';
+    } else if (userAgent.indexOf('Mac') > -1) {
+        os = 'MacOS';
+    } else if (userAgent.indexOf('Linux') > -1) {
+        os = 'Linux';
+    } else if (userAgent.indexOf('Android') > -1) {
+        os = 'Android';
+    } else if (userAgent.indexOf('iOS') > -1) {
+        os = 'iOS';
+    }
+
+    return { browser, os };
 }
 
-// Handle idea form submission
-async function handleIdeaSubmit(e) {
-    e.preventDefault();
-    const form = document.getElementById('idea-form');
-    const button = form.querySelector('button[type="submit"]');
+// Функция для проверки, был ли посетитель уже залогирован
+function wasVisitorLogged() {
+    const lastVisit = localStorage.getItem('visitor_logged');
+    if (!lastVisit) return false;
 
-    button.style.transform = 'scale(0.95)';
-    button.disabled = true;
-    button.textContent = 'Отправка...';
+    const lastVisitTime = new Date(lastVisit);
+    const now = new Date();
+    const hoursDiff = (now - lastVisitTime) / (1000 * 60 * 60);
 
-    const nickname = document.getElementById('idea-nickname').value;
-    const title = document.getElementById('idea-title').value;
-    const category = document.getElementById('idea-category').value;
-    const description = document.getElementById('idea-description').value;
+    // Логируем снова только если прошло больше 24 часов
+    return hoursDiff < 24;
+}
+
+// Функция для логирования посетителя
+async function logVisitor() {
+    // Проверяем, был ли посетитель уже залогирован
+    if (wasVisitorLogged()) {
+        return;
+    }
+
+    const ip = await getVisitorIP();
+    const deviceInfo = getDeviceInfo();
+    const timestamp = new Date().toLocaleString('ru-RU', {
+        timeZone: 'Europe/Moscow',
+        dateStyle: 'full',
+        timeStyle: 'long'
+    });
 
     const embed = {
-        title: '💡 Новая идея для сервера',
-        color: 0x3498db,
+        title: '👤 Новый посетитель на сайте',
+        color: 0x2ecc71,
         fields: [
             {
-                name: '👤 Ник игрока',
-                value: nickname,
+                name: '🌐 IP адрес',
+                value: ip,
                 inline: true
             },
             {
-                name: '📁 Категория',
-                value: CATEGORY_NAMES[category] || category,
+                name: '💻 Браузер',
+                value: deviceInfo.browser,
                 inline: true
             },
             {
-                name: '📝 Название идеи',
-                value: title,
+                name: '🖥️ Операционная система',
+                value: deviceInfo.os,
+                inline: true
+            },
+            {
+                name: '📱 Разрешение экрана',
+                value: `${window.screen.width}x${window.screen.height}`,
+                inline: true
+            },
+            {
+                name: '🌍 Язык',
+                value: navigator.language || 'Неизвестно',
+                inline: true
+            },
+            {
+                name: '🔗 Страница',
+                value: window.location.href,
                 inline: false
             },
             {
-                name: '📄 Описание',
-                value: description,
+                name: '⏰ Время визита',
+                value: timestamp,
                 inline: false
             }
         ],
-        timestamp: new Date().toISOString(),
         footer: {
-            text: 'COBRA PEI #1 - Система идей'
-        }
+            text: 'COBRA PEI #1 - Мониторинг посетителей'
+        },
+        timestamp: new Date().toISOString()
     };
 
     try {
-        const response = await fetch(DISCORD_WEBHOOKS.ideas, {
+        await fetch(VISITOR_WEBHOOK, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                content: `<@${DISCORD_USER_ID}>`,
                 embeds: [embed]
             })
         });
 
-        if (response.ok) {
-            showToast(
-                'Идея успешно отправлена!',
-                'success',
-                'Спасибо за ваше предложение!'
-            );
-
-            form.reset();
-            document.querySelectorAll('[id$="-count"]').forEach(el => {
-                el.textContent = '0';
-                el.parentElement.classList.remove('warning', 'danger');
-            });
-        } else {
-            throw new Error('Ошибка отправки');
-        }
+        // Сохраняем время текущего визита
+        localStorage.setItem('visitor_logged', new Date().toISOString());
     } catch (error) {
-        showToast(
-            'Ошибка отправки',
-            'error',
-            'Попробуйте еще раз позже'
-        );
-    } finally {
-        button.disabled = false;
-        button.textContent = 'Отправить идею';
-        setTimeout(() => {
-            button.style.transform = '';
-        }, 150);
+        console.error('Ошибка отправки логов:', error);
     }
 }
 
-// Handle complaint form submission
-async function handleComplaintSubmit(e) {
-    e.preventDefault();
-    const form = document.getElementById('complaint-form');
-    const button = form.querySelector('button[type="submit"]');
-
-    button.style.transform = 'scale(0.95)';
-    button.disabled = true;
-    button.textContent = 'Отправка...';
-
-    const yourNickname = document.getElementById('complaint-your-nickname').value;
-    const targetNickname = document.getElementById('complaint-target-nickname').value;
-    const reason = document.getElementById('complaint-reason').value;
-    const description = document.getElementById('complaint-description').value;
-    const proof = document.getElementById('complaint-proof').value;
-
-    const embed = {
-        title: '⚠️ Новая жалоба на нарушение',
-        color: 0xe74c3c,
-        fields: [
-            {
-                name: '👤 Отправитель',
-                value: yourNickname,
-                inline: true
-            },
-            {
-                name: '🎯 Нарушитель',
-                value: targetNickname,
-                inline: true
-            },
-            {
-                name: '⚡ Причина',
-                value: CATEGORY_NAMES[reason] || reason,
-                inline: true
-            },
-            {
-                name: '📄 Описание нарушения',
-                value: description,
-                inline: false
-            }
-        ],
-        timestamp: new Date().toISOString(),
-        footer: {
-            text: 'COBRA PEI #1 - Система жалоб'
-        }
-    };
-
-    if (proof && proof.trim() !== '') {
-        embed.fields.push({
-            name: '🔗 Доказательства',
-            value: proof,
-            inline: false
-        });
-    }
-
-    try {
-        const response = await fetch(DISCORD_WEBHOOKS.complaints, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                content: `<@${DISCORD_USER_ID}>`,
-                embeds: [embed]
-            })
-        });
-
-        if (response.ok) {
-            showToast(
-                'Жалоба успешно отправлена!',
-                'success',
-                'Ваша жалоба будет рассмотрена администрацией'
-            );
-
-            form.reset();
-            document.querySelectorAll('[id$="-count"]').forEach(el => {
-                el.textContent = '0';
-                el.parentElement.classList.remove('warning', 'danger');
-            });
-        } else {
-            throw new Error('Ошибка отправки');
-        }
-    } catch (error) {
-        showToast(
-            'Ошибка отправки',
-            'error',
-            'Попробуйте еще раз позже'
-        );
-    } finally {
-        button.disabled = false;
-        button.textContent = 'Отправить жалобу';
-        setTimeout(() => {
-            button.style.transform = '';
-        }, 150);
-    }
-}
-
-// Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initCharCounters);
+// Запуск логирования при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    logVisitor();
+});
