@@ -39,8 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ripple.style.animation = 'ripple 0.6s ease-out';
         ripple.style.pointerEvents = 'none';
 
-        button.style.position = 'relative';
-        button.style.overflow = 'hidden';
         button.appendChild(ripple);
 
         setTimeout(() => {
