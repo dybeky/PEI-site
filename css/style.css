@@ -39,6 +39,14 @@ body.light-theme {
     --status-offline: #dc2626;
 }
 
+/* ===== Protection Styles ===== */
+body {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 /* ===== Reset & Base Styles ===== */
 * {
     margin: 0;

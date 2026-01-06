@@ -89,29 +89,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Copy IP functionality
-    if (copyIpBtn) {
-        copyIpBtn.addEventListener('click', async () => {
-            if (!currentServerIP) {
-                return;
-            }
+    // Copy IP function
+    async function copyIP() {
+        if (!currentServerIP) {
+            return;
+        }
 
-            try {
-                await navigator.clipboard.writeText(currentServerIP);
-                showCopyNotification();
-            } catch (err) {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = currentServerIP;
-                textArea.style.position = 'fixed';
-                textArea.style.left = '-9999px';
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                showCopyNotification();
-            }
-        });
+        try {
+            await navigator.clipboard.writeText(currentServerIP);
+            showCopyNotification();
+        } catch (err) {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = currentServerIP;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showCopyNotification();
+        }
+    }
+
+    // Copy IP on button click
+    if (copyIpBtn) {
+        copyIpBtn.addEventListener('click', copyIP);
+    }
+
+    // Copy IP on text click
+    if (serverIPElement) {
+        serverIPElement.style.cursor = 'pointer';
+        serverIPElement.title = 'Нажми чтобы скопировать';
+        serverIPElement.addEventListener('click', copyIP);
     }
 
     function showCopyNotification() {
