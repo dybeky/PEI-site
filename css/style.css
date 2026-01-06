@@ -4,37 +4,37 @@
     --bg-secondary: #1a1a1a;
     --bg-card: #000;
     --text-primary: #fff;
-    --text-secondary: #9ca3af;
+    --text-secondary: #a0a0a0;
     --text-muted: #d1d5db;
     --btn-bg: #fff;
     --btn-text: #000;
     --btn-hover: #e5e5e5;
     --shadow: rgba(0, 0, 0, 0.5);
-    --particle-color: rgba(255, 255, 255, 0.5);
-    --accent-primary: #8b5cf6;
-    --accent-secondary: #ec4899;
-    --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
-    --accent-glow: rgba(139, 92, 246, 0.4);
+    --particle-color: rgba(255, 124, 0, 0.5);
+    --accent-primary: #FF7C00;
+    --accent-secondary: #FF9A33;
+    --accent-gradient: linear-gradient(135deg, #FF7C00 0%, #FF9A33 100%);
+    --accent-glow: rgba(255, 124, 0, 0.4);
     --status-online: #10b981;
     --status-offline: #ef4444;
 }
 
 body.light-theme {
-    --bg-primary: #f3f4f6;
-    --bg-secondary: #e5e7eb;
+    --bg-primary: #f5f5f5;
+    --bg-secondary: #e5e5e5;
     --bg-card: #fff;
-    --text-primary: #1f2937;
-    --text-secondary: #6b7280;
-    --text-muted: #4b5563;
-    --btn-bg: #1f2937;
+    --text-primary: #000;
+    --text-secondary: #555;
+    --text-muted: #333;
+    --btn-bg: #000;
     --btn-text: #fff;
-    --btn-hover: #374151;
+    --btn-hover: #222;
     --shadow: rgba(0, 0, 0, 0.1);
-    --particle-color: rgba(0, 0, 0, 0.3);
-    --accent-primary: #7c3aed;
-    --accent-secondary: #db2777;
-    --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
-    --accent-glow: rgba(124, 58, 237, 0.3);
+    --particle-color: rgba(255, 124, 0, 0.4);
+    --accent-primary: #FF7C00;
+    --accent-secondary: #E06A00;
+    --accent-gradient: linear-gradient(135deg, #FF7C00 0%, #E06A00 100%);
+    --accent-glow: rgba(255, 124, 0, 0.3);
     --status-online: #059669;
     --status-offline: #dc2626;
 }
@@ -125,13 +125,13 @@ h2 {
 
 .header h1::before {
     left: 2px;
-    text-shadow: -2px 0 #ff00ff;
+    text-shadow: -2px 0 #FF7C00;
     animation: glitch-1 2.5s infinite linear alternate-reverse;
 }
 
 .header h1::after {
     left: -2px;
-    text-shadow: 2px 0 #00ffff;
+    text-shadow: 2px 0 #fff;
     animation: glitch-2 3s infinite linear alternate-reverse;
 }
 
@@ -436,14 +436,6 @@ h2 {
     height: 8px;
     background: var(--accent-gradient);
     border-radius: 50%;
-}
-
-/* ===== 3D Tilt Effect ===== */
-.server-status,
-.wipe-timer,
-.rules-accordion,
-.github-content {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 /* ===== GitHub Content ===== */
