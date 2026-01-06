@@ -70,14 +70,24 @@ body {
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: url('../mac.jpg') center/cover no-repeat;
-    filter: blur(8px);
-    z-index: -1;
-    transform: scale(1.1);
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        #0a0a0a 0%,
+        #1a1a1a 20%,
+        #FF7C00 35%,
+        #ffffff 50%,
+        #FF7C00 65%,
+        #1a1a1a 80%,
+        #0a0a0a 100%
+    );
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+    filter: blur(60px);
+    z-index: -2;
 }
 
 body::after {
@@ -87,12 +97,24 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(0, 0, 0, 0.7);
     z-index: -1;
 }
 
 body.light-theme::after {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 /* ===== Particle Canvas ===== */
@@ -107,7 +129,7 @@ body.light-theme::after {
 }
 
 .container {
-    max-width: 42rem;
+    max-width: 56rem;
     margin: 0 auto;
     position: relative;
     z-index: 10;
@@ -181,22 +203,40 @@ h2 {
     transition: background 0.5s ease, box-shadow 0.5s ease;
 }
 
+/* ===== Servers Grid ===== */
+.servers-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
 /* ===== Server Status ===== */
 .server-status {
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 0;
     padding: 16px;
     background: var(--bg-card);
     border-radius: 8px;
     transition: background 0.5s ease;
 }
 
+.server-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
 .status-indicator {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    font-size: 1.1rem;
+    gap: 8px;
+    font-size: 0.95rem;
     font-weight: 500;
 }
 
@@ -231,9 +271,9 @@ h2 {
 
 .server-ip {
     font-family: 'Courier New', monospace;
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: var(--text-primary);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.02em;
 }
 
 .copy-ip-btn {
@@ -474,63 +514,60 @@ h2 {
     border-radius: 50%;
 }
 
-/* ===== GitHub Content ===== */
-.github-content {
-    text-align: center;
-    padding: 40px 20px;
+/* ===== Links Section ===== */
+.links-section {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 24px 0;
+    flex-wrap: wrap;
 }
 
-.github-content h2 {
-    margin-bottom: 20px;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.github-content p {
-    color: var(--text-muted);
-    margin-bottom: 30px;
-    font-size: 1.1rem;
-}
-
+.discord-link,
 .github-link {
-    display: inline-block;
-    background: var(--accent-gradient);
-    color: #fff;
-    padding: 16px 32px;
-    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 28px;
+    border-radius: 12px;
     text-decoration: none;
     font-weight: 600;
-    transition: all 0.3s;
     font-size: 1rem;
-    box-shadow: 0 4px 15px var(--accent-glow);
+    transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
 }
 
-.github-link::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+.discord-link {
+    background: linear-gradient(135deg, #5865F2 0%, #7289da 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
 }
 
-.github-link:hover::before {
-    left: 100%;
+.discord-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(88, 101, 242, 0.5);
+}
+
+.github-link {
+    background: var(--accent-gradient);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--accent-glow);
 }
 
 .github-link:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px var(--accent-glow);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px var(--accent-glow);
 }
 
+.discord-link:active,
 .github-link:active {
-    transform: translateY(0);
+    transform: translateY(-1px);
+}
+
+.discord-link svg,
+.github-link svg {
+    flex-shrink: 0;
 }
 
 /* ===== Theme Toggle Button ===== */
@@ -714,18 +751,18 @@ footer div {
         font-size: 0.85rem;
     }
 
-    .github-content {
-        padding: 30px 15px;
+    /* Links Mobile */
+    .links-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
     }
 
-    .github-content p {
-        font-size: 1rem;
-        margin-bottom: 25px;
-    }
-
+    .discord-link,
     .github-link {
-        padding: 14px 28px;
-        font-size: 0.95rem;
+        width: 100%;
+        justify-content: center;
+        padding: 14px 20px;
     }
 
     /* Timer Mobile */
@@ -746,19 +783,7 @@ footer div {
         font-size: 1.5rem;
     }
 
-    /* Accordion Mobile */
-    .accordion-header {
-        padding: 14px 16px;
-        font-size: 0.95rem;
-    }
-
-    .accordion-content ul {
-        padding: 12px 16px;
-    }
-
-    .accordion-content li {
-        font-size: 0.9rem;
-    }
+    /* Servers Grid Mobile - handled below */
 
     /* Server IP Mobile */
     .server-ip-container {
@@ -789,15 +814,21 @@ footer div {
         padding: 16px;
     }
 
-    .github-content {
-        padding: 25px 10px;
-    }
-
+    .discord-link,
     .github-link {
-        padding: 12px 24px;
+        padding: 12px 16px;
         font-size: 0.9rem;
     }
 }
+
+/* Servers Grid Responsive */
+@media (max-width: 600px) {
+    .servers-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
+
 
 @media (min-width: 769px) and (max-width: 1024px) {
     body {

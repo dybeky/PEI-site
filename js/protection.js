@@ -1,4 +1,4 @@
-// DevTools Protection
+// Advanced Protection System
 (function() {
     'use strict';
 
@@ -8,7 +8,7 @@
         return false;
     });
 
-    // Блокировка горячих клавиш DevTools
+    // Блокировка горячих клавиш
     document.addEventListener('keydown', function(e) {
         // F12
         if (e.key === 'F12' || e.keyCode === 123) {
@@ -45,49 +45,79 @@
             e.preventDefault();
             return false;
         }
+
+        // Ctrl+P (Print)
+        if (e.ctrlKey && (e.key === 'P' || e.key === 'p' || e.keyCode === 80)) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Ctrl+A (Select All)
+        if (e.ctrlKey && (e.key === 'A' || e.key === 'a' || e.keyCode === 65)) {
+            e.preventDefault();
+            return false;
+        }
+
+        // PrintScreen
+        if (e.key === 'PrintScreen' || e.keyCode === 44) {
+            e.preventDefault();
+            return false;
+        }
     });
 
-    // Детекция DevTools через debugger
+    // Детекция DevTools через размер окна
     let devtoolsOpen = false;
+    let warningShown = false;
 
     const detectDevTools = function() {
         const threshold = 160;
-        const widthThreshold = window.outerWidth - window.innerWidth > threshold;
-        const heightThreshold = window.outerHeight - window.innerHeight > threshold;
+        const widthDiff = window.outerWidth - window.innerWidth;
+        const heightDiff = window.outerHeight - window.innerHeight;
 
-        if (widthThreshold || heightThreshold) {
+        if (widthDiff > threshold || heightDiff > threshold) {
             if (!devtoolsOpen) {
                 devtoolsOpen = true;
                 onDevToolsOpen();
             }
         } else {
+            if (devtoolsOpen && warningShown) {
+                location.reload();
+            }
             devtoolsOpen = false;
         }
     };
 
     const onDevToolsOpen = function() {
-        // Действие при открытии DevTools
-        document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;background:#0a0a0a;color:#ff4444;font-family:Rubik,sans-serif;font-size:24px;text-align:center;padding:20px;">DevTools обнаружены. Закройте их для продолжения.</div>';
+        warningShown = true;
+        document.body.innerHTML = `
+            <div style="
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                height: 100vh;
+                background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+                color: #FF7C00;
+                font-family: 'Rubik', sans-serif;
+                text-align: center;
+                padding: 20px;
+            ">
+                <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+                <div style="font-size: 24px; font-weight: 600; margin-bottom: 10px;">DevTools Detected</div>
+                <div style="font-size: 16px; color: #a0a0a0;">Закройте инструменты разработчика для продолжения</div>
+            </div>
+        `;
     };
 
-    // Проверка каждые 500мс
     setInterval(detectDevTools, 500);
 
-    // Debugger detection
-    let checkStatus = false;
-
-    setInterval(function() {
-        const start = performance.now();
-        debugger;
-        const end = performance.now();
-
-        if (end - start > 100) {
-            if (!checkStatus) {
-                checkStatus = true;
-                onDevToolsOpen();
-            }
+    // Детекция через console.log
+    const element = new Image();
+    Object.defineProperty(element, 'id', {
+        get: function() {
+            onDevToolsOpen();
         }
-    }, 1000);
+    });
 
     // Блокировка drag & drop
     document.addEventListener('dragstart', function(e) {
@@ -95,9 +125,8 @@
         return false;
     });
 
-    // Блокировка выделения текста (опционально - можно убрать если мешает)
+    // Блокировка выделения текста
     document.addEventListener('selectstart', function(e) {
-        // Разрешаем выделение в инпутах
         if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
             return true;
         }
@@ -105,17 +134,29 @@
         return false;
     });
 
+    // Блокировка копирования
+    document.addEventListener('copy', function(e) {
+        e.preventDefault();
+        return false;
+    });
+
+    // Защита от iframe
+    if (window.self !== window.top) {
+        window.top.location = window.self.location;
+    }
+
     // Очистка консоли
     console.clear();
 
-    // Перезапись console.log
-    const originalConsole = console.log;
-    console.log = function() {
-        console.clear();
-    };
+    // Предупреждение в консоли
+    console.log('%c⛔ СТОП!', 'color: #ff4444; font-size: 50px; font-weight: bold; text-shadow: 2px 2px 0 #000;');
+    console.log('%cЭта функция браузера предназначена для разработчиков.', 'color: #FF7C00; font-size: 16px;');
+    console.log('%cЕсли кто-то сказал вам что-то сюда вставить - это мошенники!', 'color: #fff; font-size: 14px;');
 
-    // Сообщение в консоли
-    console.log('%cСтоп!', 'color: red; font-size: 50px; font-weight: bold;');
-    console.log('%cЭта функция браузера предназначена для разработчиков.', 'font-size: 18px;');
+    // Периодическая очистка консоли
+    setInterval(function() {
+        console.clear();
+        console.log('%c⛔ СТОП!', 'color: #ff4444; font-size: 50px; font-weight: bold;');
+    }, 5000);
 
 })();
